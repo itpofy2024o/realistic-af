@@ -10,11 +10,10 @@ contract ToDoMFers {
     }
 
     JustDoIt[] public jdis;
-    mapping(uint256 => bool) hs;
+    uint256[] ds;
 
     event DidIt(uint256 id, string header, string[] tasks, bool done);
-    event ChangedIt(uint256 id, bool done);
-    event HidIt(uint256 id);
+    event DoneIt(uint256 id, bool done);
 
     function ToBeDone(string memory headerANew, string[] memory tasksANew) public {
         jdis.push(JustDoIt({
@@ -31,7 +30,13 @@ contract ToDoMFers {
     }
 
     function AllDidNotDone() public view returns (JustDoIt[] memory) {
-        
+        JustDoIt[] memory jdisnd = new JustDoIt[](jdis.length-ds.length);
+        for (uint g=0;g<jdis.length;g++) {
+            if (jdis[g].done==false) {
+                jdisnd[jdisnd.length]=jdis[g];
+            }
+        }
+        return jdisnd;
     }
 
     function DidOne(uint256 did) public view returns (JustDoIt memory) {
@@ -42,24 +47,19 @@ contract ToDoMFers {
         }
     }
 
-    function ChangedOne(uint256[] memory dids) public {
+    function DoneLots(uint256[] memory dids) public {
         for (uint d = 0; d< dids.length;d++) {
             if (jdis[dids[d]].id==d) {
                 if (jdis[dids[d]].done==false) {
                     jdis[dids[d]].done=!jdis[dids[d]].done;
-                    emit ChangedIt(dids[d], true);
+                    ds.push(dids[d]);
+                    emit DoneIt(dids[d], true);
                 } else {
                     
                 }
             } else {
                 
             }
-        }
-    }
-
-    function HidLots(uint256[] memory dids) public {
-        for (uint s=0;s<dids.length;s++) {
-
         }
     }
 }
