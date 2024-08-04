@@ -7,6 +7,7 @@ contract ToDoMFers {
         string header;
         string[] tasks;
         bool done;
+        string[] comments;
     }
 
     JustDoIt[] public jdis;
@@ -16,11 +17,13 @@ contract ToDoMFers {
     event DoneIt(uint256 id, bool done);
 
     function ToBeDone(string memory headerANew, string[] memory tasksANew) public {
+        string[] memory emptyTags;
         jdis.push(JustDoIt({
             id: jdis.length,
             header:headerANew,
             tasks:tasksANew,
-            done:false
+            done:false,
+            comments:emptyTags
         }));
         emit DidIt(jdis.length, headerANew, tasksANew, false);
     }
