@@ -36,6 +36,7 @@ contract JoMe {
 
     struct Releaser {
         string name;
+        uint256 releaserId;
         address identifier;
         string description;
         string location;
@@ -65,8 +66,8 @@ contract JoMe {
     event ReleaserInfoUpdated(uint256 indexed releaserId);
     event ItemUpdated(uint256 indexed itemId);
 
-    modifier onlyReleaserOwner() {
-        require(releaserBoolean[msg.sender]==true, "Not a valid releaser");
+    modifier onlyReleaserOwner(uint256 releaserId) {
+        require(releasers[releaserId].identifier==msg.sender, "Not the valid owner");
         _;
     }
 
