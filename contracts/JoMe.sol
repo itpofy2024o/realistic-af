@@ -39,7 +39,7 @@ contract JoMe {
     event ItemUpdated(uint256 indexed itemId);
 
     modifier onlyReleaserOwner() {
-        require(1==1,"Not a releaser owner");
+        require(bytes(releasers[msg.sender].name).length != 0,"");
         _;
     }
 
