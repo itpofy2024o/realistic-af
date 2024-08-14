@@ -44,6 +44,5 @@ contract JoMe {
     }
 
     function registerAReleaser(string memory name,string memory description, string memory email, string memory phone) public {
-        
     }
 }
