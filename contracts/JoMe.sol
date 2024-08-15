@@ -62,7 +62,7 @@ contract JoMe {
 
     event ReleaserCreated(uint256 releaserId, address indexed owner);
     event ItemAddedToReleaser(uint256 itemId, address indexed owner);
-    event ItemOrderedByReceiver(address indexed user, uint256 indexed itemId);
+    event ItemOrderedByReceiver(address indexed receiver, uint256 indexed itemId);
     event ReleaserInfoUpdated(uint256 indexed releaserId);
     event ItemUpdated(uint256 indexed itemId);
 
@@ -88,7 +88,7 @@ contract JoMe {
         releaser.description = description;
         releaser.email = email;
         releaser.phone = phone;
-        emit ReleaserUpdated(releaserId);
+        emit ReleaserInfoUpdated(releaserId);
     }
 
     function addItem(
@@ -97,9 +97,7 @@ contract JoMe {
         string memory description,
         string[] memory categories,
         uint256 price,
-        uint256 amount,
-        string memory location,
-        string memory manufacturingInfo
+        uint256 amount
     ) public onlyReleaserOwner(releaserId) {
         Item storage item = items[itemCount];
         item.name = name;
@@ -107,23 +105,13 @@ contract JoMe {
         item.categories = categories;
         item.price = price;
         item.amount = amount;
-        item.location = location;
-        item.manufacturingInfo = manufacturingInfo;
-        item.owner = msg.sender;
-
-        releasers[releaserId].itemIds.push(itemCount);
         itemCount++;
         emit ItemAddedToReleaser(itemCount - 1, msg.sender);
     }
 
-    function viewItem(uint256 itemId) public {
+    function viewItem(uint256 itemId) public view returns (uint256) {
         require(itemId < itemCount, "Item does not exist");
-        Item storage item = items[itemId];
-
-        if (!users[msg.sender].viewedItems[itemId]) {
-            item.viewCount++;
-            users[msg.sender].viewedItems[itemId] = true;
-        }
+        return 1;
     }
 
     function orderItem(uint256 itemId) public {
@@ -132,19 +120,11 @@ contract JoMe {
         require(item.amount > 0, "Item out of stock");
 
         item.amount--;
-        users[msg.sender].orderedItems.push(itemId);
-        emit ItemOrdered(msg.sender, itemId);
+        emit ItemOrderedByReceiver(msg.sender, itemId);
     }
 
     function getReleaserItems(uint256 releaserId) public view returns (Item[] memory) {
-        uint256[] storage itemIds = releasers[releaserId].itemIds;
-        Item[] memory releaserItems = new Item[](itemIds.length);
 
-        for (uint256 i = 0; i < itemIds.length; i++) {
-            releaserItems[i] = items[itemIds[i]];
-        }
-
-        return releaserItems;
     }
 
     function getTopViewedItems(uint256 topN) public view returns (Item[] memory) {
@@ -177,10 +157,7 @@ contract JoMe {
     }
 
     function deleteItems(uint256 releaserId, uint256[] memory itemIds) public onlyReleaserOwner(releaserId) {
-        for (uint256 i = 0; i < itemIds.length; i++) {
-            require(items[itemIds[i]].owner == msg.sender, "Cannot delete others' items");
-            delete items[itemIds[i]];
-        }
+
     }
 
     function updateItem(
@@ -189,21 +166,14 @@ contract JoMe {
         string memory description,
         string[] memory categories,
         uint256 price,
-        uint256 amount,
-        string memory location,
-        string memory manufacturingInfo
+        uint256 amount
     ) public {
         Item storage item = items[itemId];
-        require(item.owner == msg.sender, "Cannot update others' items");
-
         item.name = name;
         item.description = description;
         item.categories = categories;
         item.price = price;
         item.amount = amount;
-        item.location = location;
-        item.manufacturingInfo = manufacturingInfo;
-
         emit ItemUpdated(itemId);
     }
 }
