@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.17;
 
-contract JoMe {
+contract FeeForFruits {
     struct Admin {
         Verification[] releaserStatus;
     }
@@ -12,25 +12,28 @@ contract JoMe {
         bool verified;
     }
 
-    struct Item {
+    struct Item { // can be standalone or bundled
         string name;
         string description;
+        string brand;
         string[] categories;
-        uint256 price;
-        uint256 amount;
+        uint256[] price;
+        string[] version; // grind, whole bean
+        string[] versionIcon; // grindPng, whole-beanPng
+        uint256 amountAvailable;
         uint256 viewCount;
-        address seller;
-        address[] buyers;
+        bool banned;
+        address[] uniqueBuyers;
         Manufacturer manufacturer;
     }
 
     struct Manufacturer {
         string name;
         string description;
-        string location;   
+        string location;
         string[] peopleInCharge;
-        string email;
-        string phone;
+        string[] email;
+        string[] phone;
         uint256[] itemManufacturedId;
     }
 
@@ -61,6 +64,7 @@ contract JoMe {
     uint256 public releaserCount;
 
     event ReleaserCreated(uint256 releaserId, address indexed owner);
+    event ReceiverCreated(uint256 releaserId, address indexed owner);
     event ItemAddedToReleaser(uint256 itemId, address indexed owner);
     event ItemOrderedByReceiver(address indexed receiver, uint256 indexed itemId);
     event ReleaserInfoUpdated(uint256 indexed releaserId);
@@ -100,11 +104,6 @@ contract JoMe {
         uint256 amount
     ) public onlyReleaserOwner(releaserId) {
         Item storage item = items[itemCount];
-        item.name = name;
-        item.description = description;
-        item.categories = categories;
-        item.price = price;
-        item.amount = amount;
         itemCount++;
         emit ItemAddedToReleaser(itemCount - 1, msg.sender);
     }
@@ -115,11 +114,6 @@ contract JoMe {
     }
 
     function orderItem(uint256 itemId) public {
-        require(itemId < itemCount, "Item does not exist");
-        Item storage item = items[itemId];
-        require(item.amount > 0, "Item out of stock");
-
-        item.amount--;
         emit ItemOrderedByReceiver(msg.sender, itemId);
     }
 
@@ -169,11 +163,6 @@ contract JoMe {
         uint256 amount
     ) public {
         Item storage item = items[itemId];
-        item.name = name;
-        item.description = description;
-        item.categories = categories;
-        item.price = price;
-        item.amount = amount;
         emit ItemUpdated(itemId);
     }
 }
