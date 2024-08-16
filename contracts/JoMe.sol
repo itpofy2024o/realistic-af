@@ -96,16 +96,7 @@ contract FeeForFruits {
     }
 
     function addItem(
-        uint256 releaserId,
-        string memory name,
-        string memory description,
-        string[] memory categories,
-        uint256 price,
-        uint256 amount
-    ) public onlyReleaserOwner(releaserId) {
-        Item storage item = items[itemCount];
-        itemCount++;
-        emit ItemAddedToReleaser(itemCount - 1, msg.sender);
+    ) public {
     }
 
     function viewItem(uint256 itemId) public view returns (uint256) {
@@ -155,14 +146,6 @@ contract FeeForFruits {
     }
 
     function updateItem(
-        uint256 itemId,
-        string memory name,
-        string memory description,
-        string[] memory categories,
-        uint256 price,
-        uint256 amount
     ) public {
-        Item storage item = items[itemId];
-        emit ItemUpdated(itemId);
     }
 }
