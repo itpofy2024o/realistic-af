@@ -23,6 +23,7 @@ contract FeeForFruits {
         uint256 amountAvailable;
         uint256 viewCount;
         bool banned;
+        bool hide;
         address[] uniqueBuyers;
         Manufacturer manufacturer;
     }
@@ -141,11 +142,7 @@ contract FeeForFruits {
         return sortedItems;
     }
 
-    function deleteItems(uint256 releaserId, uint256[] memory itemIds) public onlyReleaserOwner(releaserId) {
+    function transparentItems(uint256 releaserId, uint256[] memory itemIds) public onlyReleaserOwner(releaserId) {
 
-    }
-
-    function updateItem(
-    ) public {
     }
 }
